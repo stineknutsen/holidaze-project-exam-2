@@ -1,7 +1,15 @@
+import React from "react";
+import { styled } from "styled-components";
+import { theme } from "../../theme";
+
+const FooterContainer = styled.footer`
+  background-color: ${theme.colors.secondary};
+  padding: 1rem;
+`;
 export default function Footer() {
   return (
-    <footer>
-      <p>&copy; 2025 holidaze. All rights reserved.</p>
-    </footer>
+    <FooterContainer>
+      <p>Footer</p>
+    </FooterContainer>
   );
 }
