@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { theme } from "../../theme";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 
 const HeaderContainer = styled.header`
   background-color: ${theme.colors.secondary};
@@ -42,10 +43,14 @@ export default function Header() {
   return (
     <HeaderContainer>
       <HeaderDiv>
-        <Logo src="src/assets/logo.png" alt="logo" />
+        <Link to="/">
+          <Logo src="src/assets/logo.png" alt="logo" />
+        </Link>
         <LinksDiv>
-          <p>Register</p>
-          <Button variant="secondary">Login</Button>
+          <Link to="/register">Register</Link>
+          <Link to="/login">
+            <Button variant="secondary">Login</Button>
+          </Link>
         </LinksDiv>
       </HeaderDiv>
     </HeaderContainer>
