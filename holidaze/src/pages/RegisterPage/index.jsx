@@ -1,3 +1,9 @@
+import RegisterForm from "../../components/Forms/RegisterForm";
+
 export default function RegisterPage() {
-  return <div>RegisterPage</div>;
+  return (
+    <div style={{ padding: "2rem" }}>
+      <RegisterForm />
+    </div>
+  );
 }
