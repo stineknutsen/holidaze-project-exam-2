@@ -1,32 +1,119 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useApi } from "../../../hooks/useApi";
 import FormWrapper from "../FormWrapper";
 import FormSelect from "../FormSelect";
 import FormInput from "../FormInput";
 import Button from "../../Button";
 
+const registerSchema = yup.object({
+  accountType: yup
+    .string()
+    .oneOf(["Customer", "Manager"], "Please select an account type")
+    .required(),
+  name: yup.string().required(),
+  email: yup.string().email().required(),
+  password: yup.string().min(8).required(),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required(),
+});
+
 export default function RegisterForm() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+  });
+
+  const { request, loading, error } = useApi();
+
+  const selectedType = watch("accountType");
+
+  const onSubmit = async (data) => {
+    const body = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      venueManager: data.accountType === "Manager",
+    };
+
+    try {
+      const res = await request("/auth/register", {
+        method: "POST",
+        body,
+      });
+
+      alert("Registered successfully!");
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <FormWrapper>
-      <h1>Register Account</h1>
-      <label for="account-type">Select account type</label>
-      <FormSelect id="account-type">
-        <option value="user">Customer</option>
-        <option value="admin">Manager</option>
-      </FormSelect>
-      <label for="username">Username</label>
-      <FormInput id="username" type="text" />
-      <label for="email">Email</label>
-      <FormInput id="email" type="email" />
-      <label for="password">Password</label>
-      <FormInput id="password" type="password" />
-      <label for="confirm-password">Confirm Password</label>
-      <FormInput id="confirm-password" type="password" />
-      <Button type="submit">Register</Button>
-      <Button type="cancel" variant="secondary">
-        Cancel
-      </Button>
-      <p style={{ textAlign: "center" }}>
-        Already have an account? <a href="/login">Login</a>
-      </p>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h1>Register</h1>
+        <label>
+          Select account type
+          <FormSelect {...register("accountType")}>
+            <option value="Customer">Customer</option>
+            <option value="Manager">Manager</option>
+          </FormSelect>
+          {errors.accountType && <p>{errors.accountType.message}</p>}
+        </label>
+
+        {selectedType === "Manager" && (
+          <p style={{ fontSize: "0.9rem" }}>
+            As a Venue Manager, you can create and manage venues, view bookings,
+            and handle event details.
+          </p>
+        )}
+
+        {selectedType === "Customer" && (
+          <p style={{ fontSize: "0.9rem" }}>
+            As a Customer, you can browse and book venues, manage your bookings,
+            and leave reviews.
+          </p>
+        )}
+
+        <label>
+          Username
+          <FormInput {...register("name")} />
+          {errors.name && <p>{errors.name.message}</p>}
+        </label>
+
+        <label>
+          Email
+          <FormInput {...register("email")} />
+          {errors.email && <p>{errors.email.message}</p>}
+        </label>
+
+        <label>
+          Password
+          <FormInput type="password" {...register("password")} />
+          {errors.password && <p>{errors.password.message}</p>}
+        </label>
+
+        <label>
+          Confirm password
+          <FormInput type="password" {...register("confirmPassword")} />
+          {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+        </label>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <Button type="submit" disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </Button>
+      </form>
     </FormWrapper>
   );
 }
