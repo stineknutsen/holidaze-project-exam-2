@@ -1,9 +1,8 @@
 import React from "react";
 import { styled } from "styled-components";
-import { theme } from "../../theme";
 
 const FooterContainer = styled.footer`
-  background-color: ${theme.colors.secondary};
+  background-color: ${(props) => props.theme.colors.secondary};
   padding: 1rem;
 `;
 

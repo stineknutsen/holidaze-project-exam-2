@@ -1,11 +1,10 @@
 import React from "react";
 import { styled } from "styled-components";
-import { theme } from "../../theme";
 import Button from "../Button";
 import { Link } from "react-router-dom";
 
 const HeaderContainer = styled.header`
-  background-color: ${theme.colors.secondary};
+  background-color: ${(props) => props.theme.colors.secondary};
   padding: 1rem;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
   align-items: center;
@@ -36,7 +35,7 @@ const LinksDiv = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-family: "Poppins", sans-serif;
+  font-family: ${(props) => props.theme.fonts.links};
 `;
 
 export default function Header() {
