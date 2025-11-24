@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { styled } from "styled-components";
 import Button from "../Button";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 
 const HeaderContainer = styled.header`
   background-color: ${(props) => props.theme.colors.secondary};
@@ -38,20 +39,60 @@ const LinksDiv = styled.div`
   font-family: ${(props) => props.theme.fonts.links};
 `;
 
-export default function Header() {
+const UserImage = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  @media (min-width: 600px) {
+    height: 45px;
+    width: 45px;
+  }
+
+  @media (min-width: 900px) {
+    height: 60px;
+    width: 60px;
+  }
+`;
+
+const UserDiv = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ${(props) => props.theme.fonts.links};
+`;
+
+const Header = () => {
+  const { user } = useContext(UserContext);
   return (
     <HeaderContainer>
-      <HeaderDiv>
-        <Link to="/">
-          <Logo src="src/assets/logo.png" alt="logo" />
-        </Link>
-        <LinksDiv>
-          <Link to="/register">Register</Link>
-          <Link to="/login">
-            <Button variant="secondary">Login</Button>
+      {user ? (
+        <HeaderDiv>
+          <Link to="/">
+            <Logo src="src/assets/logo.png" alt="logo" />
           </Link>
-        </LinksDiv>
-      </HeaderDiv>
+          <UserDiv>
+            <p>{user.name}</p>
+            <Link to="/profile">
+              <UserImage src={user.avatar.url} alt={user.avatar.alt} />
+            </Link>
+          </UserDiv>
+        </HeaderDiv>
+      ) : (
+        <HeaderDiv>
+          <Link to="/">
+            <Logo src="src/assets/logo.png" alt="logo" />
+          </Link>
+          <LinksDiv>
+            <Link to="/register">Register</Link>
+            <Link to="/login">
+              <Button variant="secondary">Login</Button>
+            </Link>
+          </LinksDiv>
+        </HeaderDiv>
+      )}
     </HeaderContainer>
   );
-}
+};
+
+export default Header;

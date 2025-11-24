@@ -34,12 +34,11 @@ export default function LoginForm() {
         body: data,
       });
 
-      const { accessToken, name, email } = response;
+      const { accessToken, name } = response;
 
       localStorage.clear();
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("name", name);
-      localStorage.setItem("email", email);
 
       showNotification(
         "success",
