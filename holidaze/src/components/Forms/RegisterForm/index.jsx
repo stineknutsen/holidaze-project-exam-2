@@ -7,6 +7,8 @@ import FormWrapper from "../FormWrapper";
 import FormSelect from "../FormSelect";
 import FormInput from "../FormInput";
 import Button from "../../Button";
+import useNotification from "../../../hooks/useNotification";
+import { useNavigate } from "react-router-dom";
 
 const registerSchema = yup.object({
   accountType: yup
@@ -32,7 +34,10 @@ export default function RegisterForm() {
     resolver: yupResolver(registerSchema),
   });
 
+  const navigate = useNavigate();
+
   const { request, loading, error } = useApi();
+  const { showNotification } = useNotification();
 
   const selectedType = watch("accountType");
 
@@ -45,15 +50,16 @@ export default function RegisterForm() {
     };
 
     try {
-      const res = await request("/auth/register", {
+      const response = await request("/auth/register", {
         method: "POST",
         body,
       });
-
-      alert("Registered successfully!");
-      console.log(res);
-    } catch (err) {
-      console.error(err);
+      showNotification("success", "You are registered! Please log in.");
+      console.log(response);
+      navigate(`/login`);
+    } catch (error) {
+      showNotification("error", error.message || "Registration failed");
+      console.error(error);
     }
   };
 

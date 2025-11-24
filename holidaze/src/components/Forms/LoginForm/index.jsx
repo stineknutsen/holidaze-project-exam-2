@@ -7,6 +7,7 @@ import FormWrapper from "../FormWrapper";
 import FormInput from "../FormInput";
 import Button from "../../Button";
 import { useNavigate } from "react-router-dom";
+import useNotification from "../../../hooks/useNotification";
 
 const loginSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -16,6 +17,7 @@ const loginSchema = yup.object({
 export default function LoginForm() {
   const { request, isLoading, isError } = useApi();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const {
     register,
@@ -34,13 +36,19 @@ export default function LoginForm() {
 
       const { accessToken, name, email } = response;
 
+      localStorage.clear();
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("name", name);
       localStorage.setItem("email", email);
 
-      alert("Login successful!");
+      showNotification(
+        "success",
+        "You are logged in! Welcome back, " + localStorage.getItem("name")
+      );
       navigate(`/profile`);
     } catch (error) {
+      showNotification("error", error.message || "Registration failed");
+
       console.error(error);
     }
   };

@@ -31,7 +31,6 @@ export function useApi() {
       return data;
     } catch (error) {
       setIsError(error.message);
-      alert(error.message);
       throw error;
     } finally {
       setIsLoading(false);
