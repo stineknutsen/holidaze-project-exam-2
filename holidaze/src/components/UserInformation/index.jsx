@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../Button";
+import Modal from "../Modal";
+import EditProfileForm from "../Forms/EditProfileForm";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 const UserProfile = styled.div`
   display: flex;
@@ -57,33 +61,55 @@ const EditButton = styled.div`
 `;
 
 const ProfileInformation = ({ user }) => {
+  const [showModal, setShowModal] = useState(false);
+  const { updateUserProfile } = useContext(UserContext);
   return (
-    <UserProfile>
-      <Banner>
-        <EditButton>
-          <Button $variant="secondary">Edit Profile</Button>
-        </EditButton>
-        <BannerImage
-          src={user.banner.url}
-          alt={user.banner.alt}
-          className="profile-image"
-        />
-      </Banner>
+    <>
+      <UserProfile>
+        <Banner>
+          <EditButton>
+            <Button $variant="secondary" onClick={() => setShowModal(true)}>
+              Edit Profile
+            </Button>
+          </EditButton>
+          <BannerImage
+            src={user.banner.url}
+            alt={user.banner.alt}
+            className="profile-image"
+          />
+        </Banner>
 
-      <UnderBanner>
-        <Avatar
-          src={user.avatar.url}
-          alt={user.avatar.alt}
-          className="profile-image"
-        />
-        <Information>
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-          <p>{user.bio || "Edit profile to add a bio"} </p>
-          <p>{user.isManager ? "Venue Manager" : "Customer"}</p>
-        </Information>
-      </UnderBanner>
-    </UserProfile>
+        <UnderBanner>
+          <Avatar
+            src={user.avatar.url}
+            alt={user.avatar.alt}
+            className="profile-image"
+          />
+          <Information>
+            <h2>{user.name}</h2>
+            <p>{user.email}</p>
+            <p>{user.bio || "Edit profile to add a bio"} </p>
+            <p>{user.isManager ? "Venue Manager" : "Customer"}</p>
+          </Information>
+        </UnderBanner>
+      </UserProfile>
+
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <EditProfileForm
+            profile={user}
+            onSubmit={async (data) => {
+              try {
+                await updateUserProfile(data);
+                setShowModal(false);
+              } catch {
+                console.error("Failed to update profile");
+              }
+            }}
+          />
+        </Modal>
+      )}
+    </>
   );
 };
 

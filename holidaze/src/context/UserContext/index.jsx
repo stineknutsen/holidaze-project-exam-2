@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
   const [username, setUsername] = useState(localStorage.getItem("name"));
   const [userLoading, setUserLoading] = useState(true);
 
-  const { request, isLoading, isError } = useApi();
+  const { request } = useApi();
   const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
@@ -42,6 +42,26 @@ export const UserProvider = ({ children }) => {
     loadUser();
   }, [username, token]);
 
+  const updateUserProfile = async (updates) => {
+    try {
+      const updated = await request(`/holidaze/profiles/${username}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "X-NOROFF-API-KEY": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: updates,
+      });
+
+      setUser(updated);
+      return updated;
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      throw error;
+    }
+  };
+
   const login = (profile, newToken) => {
     localStorage.setItem("name", profile.name);
     localStorage.setItem("accessToken", newToken);
@@ -67,6 +87,7 @@ export const UserProvider = ({ children }) => {
         userLoading,
         login,
         logout,
+        updateUserProfile,
       }}
     >
       {children}
