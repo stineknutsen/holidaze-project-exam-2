@@ -5,14 +5,23 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("accessToken"));
+  const [username, setUsername] = useState(localStorage.getItem("name"));
+  const [userLoading, setUserLoading] = useState(true);
+
   const { request, isLoading, isError } = useApi();
-  const username = localStorage.getItem("name");
-  const token = localStorage.getItem("accessToken");
   const apiKey = import.meta.env.VITE_API_KEY;
 
   useEffect(() => {
     async function loadUser() {
+      if (!username || !token) {
+        setUser(null);
+        setUserLoading(false);
+        return;
+      }
+
       try {
+        setUserLoading(true);
         const data = await request(`/holidaze/profiles/${username}`, {
           method: "GET",
           headers: {
@@ -22,16 +31,44 @@ export const UserProvider = ({ children }) => {
         });
 
         setUser(data);
-      } catch (err) {
-        console.log("Failed to fetch user:", err);
+      } catch (error) {
+        console.log("Failed to fetch user:", error);
+        setUser(null);
+      } finally {
+        setUserLoading(false);
       }
     }
 
     loadUser();
-  }, []);
+  }, [username, token]);
+
+  const login = (profile, newToken) => {
+    localStorage.setItem("name", profile.name);
+    localStorage.setItem("accessToken", newToken);
+
+    setUsername(profile.name);
+    setToken(newToken);
+    setUser(profile);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("name");
+    localStorage.removeItem("accessToken");
+
+    setUsername(null);
+    setToken(null);
+    setUser(null);
+  };
 
   return (
-    <UserContext.Provider value={{ user, isLoading, isError }}>
+    <UserContext.Provider
+      value={{
+        user,
+        userLoading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

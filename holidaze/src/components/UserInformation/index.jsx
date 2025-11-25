@@ -9,18 +9,22 @@ const UserProfile = styled.div`
   margin: 20px;
   border: none;
   border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
 `;
 
 const Banner = styled.div`
-  width: 100%;
-  object-fit: cover;
   position: relative;
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
 `;
 
 const BannerImage = styled.img`
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
 `;
 
 const Avatar = styled.img`
@@ -57,7 +61,7 @@ const ProfileInformation = ({ user }) => {
     <UserProfile>
       <Banner>
         <EditButton>
-          <Button variant="secondary">Edit Profile</Button>
+          <Button $variant="secondary">Edit Profile</Button>
         </EditButton>
         <BannerImage
           src={user.banner.url}

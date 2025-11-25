@@ -72,9 +72,11 @@ const Header = () => {
             <Logo src="src/assets/logo.png" alt="logo" />
           </Link>
           <UserDiv>
-            <p>{user.name}</p>
+            <p>{user?.name ?? "Loading..."}</p>
             <Link to="/profile">
-              <UserImage src={user.avatar.url} alt={user.avatar.alt} />
+              {user?.avatar && (
+                <UserImage src={user.avatar.url} alt={user.avatar.alt} />
+              )}
             </Link>
           </UserDiv>
         </HeaderDiv>
@@ -86,7 +88,7 @@ const Header = () => {
           <LinksDiv>
             <Link to="/register">Register</Link>
             <Link to="/login">
-              <Button variant="secondary">Login</Button>
+              <Button $variant="secondary">Login</Button>
             </Link>
           </LinksDiv>
         </HeaderDiv>

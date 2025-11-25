@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,6 +8,7 @@ import FormInput from "../FormInput";
 import Button from "../../Button";
 import { useNavigate } from "react-router-dom";
 import useNotification from "../../../hooks/useNotification";
+import { UserContext } from "../../../context/UserContext";
 
 const loginSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -18,6 +19,7 @@ export default function LoginForm() {
   const { request, isLoading, isError } = useApi();
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const { login } = useContext(UserContext);
 
   const {
     register,
@@ -36,13 +38,18 @@ export default function LoginForm() {
 
       const { accessToken, name } = response;
 
-      localStorage.clear();
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("name", name);
+      const profile = await request(`/holidaze/profiles/${name}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-NOROFF-API-KEY": import.meta.env.VITE_API_KEY,
+        },
+      });
+
+      login(profile, accessToken);
 
       showNotification(
         "success",
-        "You are logged in! Welcome back, " + localStorage.getItem("name")
+        `You are logged in! Welcome back, ${profile.name}!`
       );
       navigate(`/profile`);
     } catch (error) {
@@ -69,7 +76,7 @@ export default function LoginForm() {
 
         {isError && <p style={{ color: "red" }}>{isError}</p>}
 
-        <Button type="submit" disabled={isLoading}>
+        <Button $variant="primary" type="submit" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
         </Button>
       </form>

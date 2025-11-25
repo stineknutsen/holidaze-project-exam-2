@@ -4,26 +4,27 @@ import { UserContext } from "../../context/UserContext";
 import Bookings from "../../components/ProfileBookings";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Button from "../../components/Button";
 
 const ProfilePage = () => {
-  const { user, isLoading, isError } = useContext(UserContext);
+  const { user, userLoading, logout } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!userLoading && !user) {
       navigate("/login");
     }
-  }, [user, isLoading, navigate]);
+  }, [user, userLoading, navigate]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error loading profile</p>;
-
+  if (userLoading) return <p>Loading...</p>;
   if (!user) return null;
 
   return (
     <div>
       <ProfileInformation user={user} />
-
+      <Button $variant="logout" onClick={logout}>
+        Log out
+      </Button>
       {/* <Bookings user={user} /> */}
     </div>
   );

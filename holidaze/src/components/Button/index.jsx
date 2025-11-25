@@ -11,8 +11,8 @@ const Button = styled.button`
   transition: background-color 0.2s ease, color 0.2s ease;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
 
-  ${({ variant }) => {
-    switch (variant) {
+  ${({ $variant }) => {
+    switch ($variant) {
       case "primary":
       default:
         return css`
@@ -29,6 +29,18 @@ const Button = styled.button`
       case "secondary":
         return css`
           background-color: ${(props) => props.theme.colors.primary};
+          color: ${(props) => props.theme.colors.text};
+
+          &:hover {
+            border-color: ${(props) => props.theme.colors.text};
+          }
+          &:focus {
+            border-color: ${(props) => props.theme.colors.text};
+          }
+        `;
+      case "logout":
+        return css`
+          background-color: ${(props) => props.theme.colors.error};
           color: ${(props) => props.theme.colors.text};
 
           &:hover {
