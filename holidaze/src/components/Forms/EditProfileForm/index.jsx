@@ -18,7 +18,7 @@ const editProfileSchema = yup.object().shape({
   venueManager: yup.boolean(),
 });
 
-const EditProfileForm = ({ profile, onSubmit }) => {
+const EditProfileForm = ({ profile, onSubmit, onCancel }) => {
   const {
     register,
     handleSubmit,
@@ -86,6 +86,9 @@ const EditProfileForm = ({ profile, onSubmit }) => {
 
       <Button $variant="primary" type="submit">
         Save
+      </Button>
+      <Button $variant="secondary" onClick={onCancel}>
+        Cancel
       </Button>
     </form>
   );

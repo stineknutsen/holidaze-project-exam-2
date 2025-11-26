@@ -62,6 +62,7 @@ export default function LoginForm() {
   return (
     <FormWrapper>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <h1>Log in</h1>
         <label>
           Email
           <FormInput type="email" {...register("email")} />

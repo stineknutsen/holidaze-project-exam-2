@@ -55,7 +55,6 @@ export default function RegisterForm() {
         body,
       });
       showNotification("success", "You are registered! Please log in.");
-      console.log(response);
       navigate(`/login`);
     } catch (error) {
       showNotification("error", error.message || "Registration failed");

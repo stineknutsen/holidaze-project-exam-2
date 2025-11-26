@@ -1,0 +1,195 @@
+import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
+import { useApi } from "../../hooks/useApi";
+import { UserContext } from "../../context/UserContext";
+import Button from "../../components/Button";
+import styled from "styled-components";
+
+const PageWrapper = styled.div`
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+`;
+
+const Banner = styled.img`
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+`;
+
+const Title = styled.h1`
+  margin-bottom: 0.5rem;
+`;
+
+const Location = styled.p`
+  color: #555;
+  margin: 0 0 1.5rem 0;
+`;
+
+const InfoBox = styled.div`
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #faf7ff;
+  border-radius: 10px;
+`;
+
+const Section = styled.section`
+  margin-top: 3rem;
+`;
+
+const Amenities = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
+const ImgList = styled.div`
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+`;
+
+const SmallImg = styled.img`
+  width: 180px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+`;
+
+const BookingList = styled.div`
+  margin-top: 1rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+`;
+
+const BookingItem = styled.div`
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const VenuePage = () => {
+  const { id } = useParams();
+  const { request, isLoading } = useApi();
+  const { user, token } = useContext(UserContext);
+
+  const [venue, setVenue] = useState(null);
+
+  useEffect(() => {
+    async function loadVenue() {
+      try {
+        const data = await request(
+          `/holidaze/venues/${id}?_owner=true&_bookings=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+            },
+          }
+        );
+        setVenue(data);
+      } catch (error) {
+        console.log("Error loading venue:", error);
+      }
+    }
+
+    loadVenue();
+  }, [id]);
+
+  if (isLoading || !venue) return <p>Loading...</p>;
+
+  const isOwner = user?.name === venue.owner?.name;
+
+  return (
+    <PageWrapper>
+      <Banner
+        src={venue.media?.[0]?.url}
+        alt={venue.media?.[0]?.alt || venue.name}
+      />
+
+      <Title>{venue.name}</Title>
+      <Location>
+        {venue.location?.address && `${venue.location.address}, `}
+        {venue.location?.city && `${venue.location.city}, `}
+        {venue.location?.country}
+      </Location>
+
+      <InfoBox>
+        <p>
+          <strong>{venue.price} NOK</strong> / night
+        </p>
+        <p>Max guests: {venue.maxGuests}</p>
+      </InfoBox>
+
+      <Amenities>
+        <p>Wifi: {venue.meta?.wifi ? "Yes" : "No"}</p>
+        <p>Parking: {venue.meta?.parking ? "Yes" : "No"}</p>
+        <p>Breakfast: {venue.meta?.breakfast ? "Yes" : "No"}</p>
+        <p>Pets: {venue.meta?.pets ? "Yes" : "No"}</p>
+      </Amenities>
+
+      <Section>
+        <h2>Description</h2>
+        <p>{venue.description}</p>
+      </Section>
+
+      {venue.media?.length > 1 && (
+        <Section>
+          <h2>Photos</h2>
+          <ImgList>
+            {venue.media.slice(1).map((image, i) => (
+              <SmallImg key={i} src={image.url} alt={image.alt} />
+            ))}
+          </ImgList>
+        </Section>
+      )}
+
+      <Section>
+        {isOwner ? (
+          <Button
+            $variant="secondary"
+            onClick={() => console.log("open edit modal")}
+          >
+            Edit Venue
+          </Button>
+        ) : (
+          <Button
+            $variant="primary"
+            onClick={() => console.log("open booking modal")}
+          >
+            Book This Venue
+          </Button>
+        )}
+      </Section>
+
+      {isOwner && (
+        <Section>
+          <h2>Your Bookings</h2>
+          {venue.bookings?.length === 0 ? (
+            <p>No bookings yet.</p>
+          ) : (
+            <BookingList>
+              {venue.bookings.map((b) => (
+                <BookingItem key={b.id}>
+                  <p>
+                    <strong>{b.customer.name}</strong>
+                  </p>
+                  <p>
+                    {b.dateFrom} → {b.dateTo}
+                  </p>
+                  <p>Guests: {b.guests}</p>
+                </BookingItem>
+              ))}
+            </BookingList>
+          )}
+        </Section>
+      )}
+    </PageWrapper>
+  );
+};
+
+export default VenuePage;

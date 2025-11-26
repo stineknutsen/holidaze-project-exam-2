@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import FormWrapper from "../Forms/FormWrapper";
+import { useEffect } from "react";
 
 const Overlay = styled.div`
   position: fixed;
@@ -17,6 +18,14 @@ const ModalBox = styled(FormWrapper)`
 `;
 
 const Modal = ({ children, onClose }) => {
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
   return (
     <Overlay onClick={onClose}>
       <ModalBox onClick={(e) => e.stopPropagation()}>{children}</ModalBox>
