@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useApi } from "../../../hooks/useApi";
 import FormWrapper from "../FormWrapper";
 import FormSelect from "../FormSelect";
@@ -9,20 +8,7 @@ import FormInput from "../FormInput";
 import Button from "../../Button";
 import useNotification from "../../../hooks/useNotification";
 import { useNavigate } from "react-router-dom";
-
-const registerSchema = yup.object({
-  accountType: yup
-    .string()
-    .oneOf(["Customer", "Manager"], "Please select an account type")
-    .required(),
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(8).required(),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")], "Passwords must match")
-    .required(),
-});
+import { registerSchema } from "../../../schemas/registerSchema";
 
 export default function RegisterForm() {
   const {
@@ -50,7 +36,7 @@ export default function RegisterForm() {
     };
 
     try {
-      const response = await request("/auth/register", {
+      await request("/auth/register", {
         method: "POST",
         body,
       });

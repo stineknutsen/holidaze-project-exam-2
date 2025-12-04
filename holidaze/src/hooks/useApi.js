@@ -10,6 +10,7 @@ export function useApi() {
 
     try {
       const baseUrl = import.meta.env.VITE_API_URL;
+
       const options = {
         method,
         headers: {
@@ -20,7 +21,13 @@ export function useApi() {
       };
 
       const response = await fetch(`${baseUrl}${endpoint}`, options);
-      const json = await response.json();
+
+      if (response.status === 204) {
+        return null;
+      }
+
+      const text = await response.text();
+      const json = text ? JSON.parse(text) : {};
       const data = json.data || json;
 
       if (!response.ok) {

@@ -1,37 +1,25 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "../../Button";
-import FormInput from "../FormInput";
+import React from "react";
 import { venueSchema } from "../../../schemas/venueSchema";
+import FormInput from "../FormInput";
 
-const AddVenueForm = ({ onSubmit, onCancel }) => {
+const EditVenueForm = ({
+  onSubmit,
+  onCancel,
+  onDelete,
+  venueData,
+  isSubmitting,
+}) => {
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
+    defaultValues: venueData,
     resolver: yupResolver(venueSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      price: "",
-      maxGuests: "",
-      media: [{ url: "", alt: "" }],
-      meta: {
-        wifi: false,
-        parking: false,
-        breakfast: false,
-        pets: false,
-      },
-      location: {
-        address: "",
-        city: "",
-        zip: "",
-        country: "",
-        continent: "",
-      },
-    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -41,7 +29,7 @@ const AddVenueForm = ({ onSubmit, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h2>Add New Venue</h2>
+      <h2>Edit Venue</h2>
 
       <label>Name</label>
       <FormInput {...register("name")} />
@@ -134,16 +122,25 @@ const AddVenueForm = ({ onSubmit, onCancel }) => {
       <FormInput {...register("location.continent")} />
 
       <div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
-        <Button $variant="primary" type="submit">
+        <Button $variant="primary" type="submit" disabled={isSubmitting}>
           Save venue
         </Button>
 
         <Button $variant="secondary" type="button" onClick={onCancel}>
           Cancel
         </Button>
+
+        <Button
+          $variant="danger"
+          type="button"
+          onClick={onDelete}
+          disabled={isSubmitting}
+        >
+          Delete venue
+        </Button>
       </div>
     </form>
   );
 };
 
-export default AddVenueForm;
+export default EditVenueForm;

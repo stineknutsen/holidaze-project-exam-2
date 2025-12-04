@@ -31,10 +31,14 @@ const Toast = styled.div`
   border-radius: 0.5rem;
   color: ${({ theme }) => theme.colors.text};
   background: ${({ type, theme }) =>
-    type === "success" ? theme.colors.success : theme.colors.error};
+    type === "success"
+      ? theme.colors.successBackground
+      : theme.colors.errorBackground};
   border: 1px solid
     ${({ type, theme }) =>
-      type === "success" ? theme.colors.success : theme.colors.error};
+      type === "success"
+        ? theme.colors.successBorder
+        : theme.colors.errorBorder};
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   z-index: 9999;
   font-size: 0.95rem;

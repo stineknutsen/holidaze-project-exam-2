@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useApi } from "../../../hooks/useApi";
 import FormWrapper from "../FormWrapper";
 import FormInput from "../FormInput";
@@ -9,11 +8,7 @@ import Button from "../../Button";
 import { useNavigate } from "react-router-dom";
 import useNotification from "../../../hooks/useNotification";
 import { UserContext } from "../../../context/UserContext";
-
-const loginSchema = yup.object({
-  email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup.string().required("Password is required"),
-});
+import { loginSchema } from "../../../schemas/loginSchema";
 
 export default function LoginForm() {
   const { request, isLoading, isError } = useApi();

@@ -1,9 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "../../hooks/useApi";
 import { UserContext } from "../../context/UserContext";
 import Button from "../../components/Button";
 import styled from "styled-components";
+import Modal from "../../components/Modal";
+import EditVenueForm from "../../components/Forms/EditVenueForm";
+import { useVenueActions } from "../../hooks/useVenueActions";
+import useNotification from "../../hooks/useNotification";
 
 const PageWrapper = styled.div`
   max-width: 900px;
@@ -76,8 +80,12 @@ const VenuePage = () => {
   const { id } = useParams();
   const { request, isLoading } = useApi();
   const { user, token } = useContext(UserContext);
-
+  const [showEditVenueModal, setShowEditVenueModal] = useState(false);
   const [venue, setVenue] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { updateVenue, deleteVenue } = useVenueActions();
+  const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     async function loadVenue() {
@@ -87,7 +95,7 @@ const VenuePage = () => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "X-Noroff-API-Key": import.meta.env.VITE_API_KEY,
+              "X-NOROFF-API-KEY": import.meta.env.VITE_API_KEY,
             },
           }
         );
@@ -98,11 +106,37 @@ const VenuePage = () => {
     }
 
     loadVenue();
-  }, [id]);
+  }, []);
 
   if (isLoading || !venue) return <p>Loading...</p>;
 
   const isOwner = user?.name === venue.owner?.name;
+
+  const handleUpdateVenue = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      const updated = await updateVenue(id, formData);
+      setVenue(updated);
+      setShowEditVenueModal(false);
+    } catch (error) {
+      console.error("Error updating venue:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteVenue = async () => {
+    if (!confirm("Are you sure you want to delete this venue?")) return;
+    try {
+      await deleteVenue(id);
+      setShowEditVenueModal(false);
+      showNotification("success", `Venue "${venue.name}" has been deleted!`);
+      navigate("/profile");
+    } catch (error) {
+      console.error("Error deleting venue:", error);
+      showNotification("error", error.message || "Failed to delete venue");
+    }
+  };
 
   return (
     <PageWrapper>
@@ -152,9 +186,9 @@ const VenuePage = () => {
         {isOwner ? (
           <Button
             $variant="secondary"
-            onClick={() => console.log("open edit modal")}
+            onClick={() => setShowEditVenueModal(true)}
           >
-            Edit Venue
+            Manage Venue
           </Button>
         ) : (
           <Button
@@ -166,9 +200,21 @@ const VenuePage = () => {
         )}
       </Section>
 
+      {showEditVenueModal && (
+        <Modal onClose={() => setShowEditVenueModal(false)}>
+          <EditVenueForm
+            venueData={venue}
+            onSubmit={handleUpdateVenue}
+            onCancel={() => setShowEditVenueModal(false)}
+            onDelete={handleDeleteVenue}
+            isSubmitting={isSubmitting}
+          />
+        </Modal>
+      )}
+
       {isOwner && (
         <Section>
-          <h2>Your Bookings</h2>
+          <h2>Upcoming Bookings</h2>
           {venue.bookings?.length === 0 ? (
             <p>No bookings yet.</p>
           ) : (
