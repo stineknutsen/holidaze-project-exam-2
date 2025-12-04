@@ -38,9 +38,10 @@ const Button = styled.button`
             border-color: ${(props) => props.theme.colors.text};
           }
         `;
-      case "logout":
+      case "danger":
         return css`
-          background-color: ${(props) => props.theme.colors.error};
+          background-color: ${(props) => props.theme.colors.errorBackground};
+          border-color: ${(props) => props.theme.colors.errorBorder};
           color: ${(props) => props.theme.colors.text};
 
           &:hover {

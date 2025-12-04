@@ -8,8 +8,10 @@ const theme = {
     secondary: "#c4b5fd",
     tertiary: "#a78bfa",
     accent: "#6835ff",
-    success: "#c6fbe7",
-    error: "#ffcbcb",
+    successBackground: "#c6fbe7",
+    successBorder: "#4dffa6",
+    errorBackground: "#ffcbcb",
+    errorBorder: "#C54141",
   },
   fonts: {
     main: '"Open Sans", sans-serif',

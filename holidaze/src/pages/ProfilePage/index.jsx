@@ -24,7 +24,7 @@ const ProfilePage = () => {
     <div>
       <ProfileInformation user={user} />
       <div style={{ display: "flex", justifyContent: "right" }}>
-        <Button $variant="logout" onClick={logout}>
+        <Button $variant="danger" onClick={logout}>
           Log out
         </Button>
       </div>
