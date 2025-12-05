@@ -1,31 +1,26 @@
 import styled from "styled-components";
-import Button from "../Button";
 import { Link } from "react-router-dom";
 
 const Card = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  height: 100%;
 
-  @media (max-width: 700px) {
-    flex-direction: column;
+  &:hover {
+    border-radius: 10px;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
   }
 `;
 
 const Image = styled.img`
-  width: 280px;
-  height: 180px;
+  width: 100%;
+  height: 235px;
+
   object-fit: cover;
   border-radius: 10px;
-
-  @media (max-width: 700px) {
-    width: 100%;
-    height: 200px;
-  }
 `;
 
 const Info = styled.div`
@@ -36,7 +31,6 @@ const Info = styled.div`
 
 const Country = styled.p`
   font-size: 0.9rem;
-  color: #666;
 `;
 
 const Title = styled.h3`
@@ -49,31 +43,8 @@ const Price = styled.p`
   font-weight: 500;
 `;
 
-const Guests = styled.p`
-  font-size: 0.9rem;
-  color: #444;
-`;
-
-const BookingButtonWrapper = styled.div`
-  margin-top: auto;
-  padding-top: 1rem;
-`;
-
-const BookingButton = styled(Button)`
-  background: #f2e8ff;
-  color: #4a1cae;
-  border: 1px solid #d7c7f5;
-  width: 200px;
-  text-align: center;
-  font-weight: 600;
-
-  &:hover {
-    background: #e8dfff;
-  }
-`;
-
 const VenueCard = ({ venue }) => {
-  const { id, media, location, name, price, maxGuests, bookings } = venue;
+  const { id, media, location, name, price } = venue;
 
   return (
     <Link
@@ -87,13 +58,6 @@ const VenueCard = ({ venue }) => {
           <Country>{location?.country}</Country>
           <Title>{name}</Title>
           <Price>{price} NOK /night</Price>
-          <Guests>Maximum {maxGuests} guests</Guests>
-
-          <BookingButtonWrapper>
-            <BookingButton type="button" onClick={(e) => e.preventDefault()}>
-              View bookings ({bookings?.length || 0})
-            </BookingButton>
-          </BookingButtonWrapper>
         </Info>
       </Card>
     </Link>

@@ -8,6 +8,7 @@ import Modal from "../../components/Modal";
 import EditVenueForm from "../../components/Forms/EditVenueForm";
 import { useVenueActions } from "../../hooks/useVenueActions";
 import useNotification from "../../hooks/useNotification";
+import formatDate from "../../utils/formatDate";
 
 const PageWrapper = styled.div`
   max-width: 900px;
@@ -28,14 +29,12 @@ const Title = styled.h1`
 `;
 
 const Location = styled.p`
-  color: #555;
   margin: 0 0 1.5rem 0;
 `;
 
 const InfoBox = styled.div`
   margin-bottom: 1rem;
   padding: 1rem;
-  background: #faf7ff;
   border-radius: 10px;
 `;
 
@@ -64,7 +63,6 @@ const SmallImg = styled.img`
 
 const BookingList = styled.div`
   margin-top: 1rem;
-  border-top: 1px solid #ddd;
   padding-top: 1rem;
 `;
 
@@ -219,15 +217,16 @@ const VenuePage = () => {
             <p>No bookings yet.</p>
           ) : (
             <BookingList>
-              {venue.bookings.map((b) => (
-                <BookingItem key={b.id}>
+              {venue.bookings.map((booking) => (
+                <BookingItem key={booking.id}>
                   <p>
-                    <strong>{b.customer.name}</strong>
+                    <strong>{booking.customer.name}</strong>
                   </p>
                   <p>
-                    {b.dateFrom} → {b.dateTo}
+                    {formatDate(booking.dateFrom)} {" - "}
+                    {formatDate(booking.dateTo)}
                   </p>
-                  <p>Guests: {b.guests}</p>
+                  <p>Guests: {booking.guests}</p>
                 </BookingItem>
               ))}
             </BookingList>

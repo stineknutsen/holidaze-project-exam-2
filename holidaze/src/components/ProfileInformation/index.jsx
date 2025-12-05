@@ -61,14 +61,17 @@ const EditButton = styled.div`
 `;
 
 const ProfileInformation = ({ user }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const { updateUserProfile } = useContext(UserContext);
   return (
     <>
       <UserProfile>
         <Banner>
           <EditButton>
-            <Button $variant="secondary" onClick={() => setShowModal(true)}>
+            <Button
+              $variant="secondary"
+              onClick={() => setShowEditProfileModal(true)}
+            >
               Edit Profile
             </Button>
           </EditButton>
@@ -94,19 +97,19 @@ const ProfileInformation = ({ user }) => {
         </UnderBanner>
       </UserProfile>
 
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
+      {showEditProfileModal && (
+        <Modal onClose={() => setShowEditProfileModal(false)}>
           <EditProfileForm
             profile={user}
             onSubmit={async (data) => {
               try {
                 await updateUserProfile(data);
-                setShowModal(false);
+                setShowEditProfileModal(false);
               } catch {
                 console.error("Failed to update profile");
               }
             }}
-            onCancel={() => setShowModal(false)}
+            onCancel={() => setShowEditProfileModal(false)}
           />
         </Modal>
       )}
