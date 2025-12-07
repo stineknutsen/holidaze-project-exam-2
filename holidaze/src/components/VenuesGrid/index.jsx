@@ -1,5 +1,4 @@
-import { useApi } from "../../hooks/useApi";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import VenueCard from "../VenueCard";
 
@@ -23,37 +22,7 @@ const Grid = styled.div`
   }
 `;
 
-const VenuesGrid = () => {
-  const { request, isLoading, isError } = useApi();
-  const [venues, setVenues] = useState([]);
-
-  useEffect(() => {
-    const fetchVenues = async () => {
-      try {
-        const data = await request("/holidaze/venues");
-        setVenues(data);
-      } catch (error) {
-        console.error("Error fetching venues:", error);
-      }
-    };
-
-    fetchVenues();
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading venues...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading venues: {isError}</div>;
-  }
-
-  if (venues.length === 0) {
-    return <div>No venues available.</div>;
-  }
-
-  console.log(venues.length);
-
+const VenuesGrid = ({ venues = [] }) => {
   return (
     <Grid>
       {venues.map((venue) => (

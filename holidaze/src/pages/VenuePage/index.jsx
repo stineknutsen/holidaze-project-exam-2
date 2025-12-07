@@ -8,7 +8,7 @@ import Modal from "../../components/Modal";
 import EditVenueForm from "../../components/Forms/EditVenueForm";
 import { useVenueActions } from "../../hooks/useVenueActions";
 import useNotification from "../../hooks/useNotification";
-import formatDate from "../../utils/formatDate";
+import BookingForm from "../../components/Forms/BookingForm";
 
 const PageWrapper = styled.div`
   max-width: 900px;
@@ -36,6 +36,7 @@ const InfoBox = styled.div`
   margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 10px;
+  background: ${(props) => props.theme.colors.primary};
 `;
 
 const Section = styled.section`
@@ -59,19 +60,6 @@ const SmallImg = styled.img`
   height: 120px;
   border-radius: 8px;
   object-fit: cover;
-`;
-
-const BookingList = styled.div`
-  margin-top: 1rem;
-  padding-top: 1rem;
-`;
-
-const BookingItem = styled.div`
-  margin-bottom: 1rem;
-  padding: 0.7rem;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const VenuePage = () => {
@@ -99,7 +87,7 @@ const VenuePage = () => {
         );
         setVenue(data);
       } catch (error) {
-        console.log("Error loading venue:", error);
+        showNotification("error", error.message || "Failed to load venue");
       }
     }
 
@@ -117,7 +105,7 @@ const VenuePage = () => {
       setVenue(updated);
       setShowEditVenueModal(false);
     } catch (error) {
-      console.error("Error updating venue:", error);
+      showNotification("error", error.message || "Failed to update venue");
     } finally {
       setIsSubmitting(false);
     }
@@ -131,7 +119,6 @@ const VenuePage = () => {
       showNotification("success", `Venue "${venue.name}" has been deleted!`);
       navigate("/profile");
     } catch (error) {
-      console.error("Error deleting venue:", error);
       showNotification("error", error.message || "Failed to delete venue");
     }
   };
@@ -189,12 +176,7 @@ const VenuePage = () => {
             Manage Venue
           </Button>
         ) : (
-          <Button
-            $variant="primary"
-            onClick={() => console.log("open booking modal")}
-          >
-            Book This Venue
-          </Button>
+          <BookingForm venue={venue} />
         )}
       </Section>
 
@@ -208,30 +190,6 @@ const VenuePage = () => {
             isSubmitting={isSubmitting}
           />
         </Modal>
-      )}
-
-      {isOwner && (
-        <Section>
-          <h2>Upcoming Bookings</h2>
-          {venue.bookings?.length === 0 ? (
-            <p>No bookings yet.</p>
-          ) : (
-            <BookingList>
-              {venue.bookings.map((booking) => (
-                <BookingItem key={booking.id}>
-                  <p>
-                    <strong>{booking.customer.name}</strong>
-                  </p>
-                  <p>
-                    {formatDate(booking.dateFrom)} {" - "}
-                    {formatDate(booking.dateTo)}
-                  </p>
-                  <p>Guests: {booking.guests}</p>
-                </BookingItem>
-              ))}
-            </BookingList>
-          )}
-        </Section>
       )}
     </PageWrapper>
   );

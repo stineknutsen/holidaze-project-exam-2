@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import EditProfileForm from "../Forms/EditProfileForm";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
+import useNotification from "../../hooks/useNotification";
 
 const UserProfile = styled.div`
   display: flex;
@@ -63,6 +64,7 @@ const EditButton = styled.div`
 const ProfileInformation = ({ user }) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const { updateUserProfile } = useContext(UserContext);
+  const { showNotification } = useNotification();
   return (
     <>
       <UserProfile>
@@ -105,8 +107,11 @@ const ProfileInformation = ({ user }) => {
               try {
                 await updateUserProfile(data);
                 setShowEditProfileModal(false);
-              } catch {
-                console.error("Failed to update profile");
+              } catch (error) {
+                showNotification(
+                  "error",
+                  error.message || "Failed to update profile"
+                );
               }
             }}
             onCancel={() => setShowEditProfileModal(false)}

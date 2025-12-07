@@ -18,6 +18,20 @@ const GlobalStyle = createGlobalStyle`
     flex: 1;
     justify-content: center;
   }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    color: ${(props) => props.theme.colors.text};
+  }
+
+  h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    color: ${(props) => props.theme.colors.text};
+  }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 export default GlobalStyle;

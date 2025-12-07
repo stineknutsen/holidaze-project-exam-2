@@ -43,6 +43,7 @@ const Button = styled.button`
           background-color: ${(props) => props.theme.colors.errorBackground};
           border-color: ${(props) => props.theme.colors.errorBorder};
           color: ${(props) => props.theme.colors.text};
+          margin-top: 1rem;
 
           &:hover {
             border-color: ${(props) => props.theme.colors.text};

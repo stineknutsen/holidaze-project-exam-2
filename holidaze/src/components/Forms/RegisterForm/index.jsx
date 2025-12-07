@@ -44,7 +44,6 @@ export default function RegisterForm() {
       navigate(`/login`);
     } catch (error) {
       showNotification("error", error.message || "Registration failed");
-      console.error(error);
     }
   };
 

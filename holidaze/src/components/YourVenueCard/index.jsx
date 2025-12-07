@@ -79,10 +79,7 @@ const YourVenueCard = ({ venue }) => {
 
   return (
     <section>
-      <Link
-        to={`/venues/${id}`}
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
+      <Link to={`/venues/${id}`}>
         <Card>
           <Image src={media?.[0]?.url} alt={media?.[0]?.alt || name} />
 

@@ -28,9 +28,8 @@ const ProfilePage = () => {
           Log out
         </Button>
       </div>
-      {/* <ProfileBookings/> */}
       {user.venueManager && <YourVenuesSection />}
-      {!user.venueManager && <p>You are not a manager</p>}
+      {!user.venueManager && <ProfileBookings profileName={user.name} />}
     </div>
   );
 };

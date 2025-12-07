@@ -31,8 +31,7 @@ export const UserProvider = ({ children }) => {
         });
 
         setUser(data);
-      } catch (error) {
-        console.log("Failed to fetch user:", error);
+      } catch {
         setUser(null);
       } finally {
         setUserLoading(false);
@@ -57,7 +56,7 @@ export const UserProvider = ({ children }) => {
       setUser(updated);
       return updated;
     } catch (error) {
-      console.error("Failed to update profile:", error);
+      console.error(error);
       throw error;
     }
   };
