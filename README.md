@@ -27,7 +27,7 @@ Holidaze is a holiday booking website built with React. It was built for the Nor
 
 git clone https://github.com/stineknutsen/holidaze-project-exam-2
 
-2.
+2. Change directory
 
 cd holidaze
 
